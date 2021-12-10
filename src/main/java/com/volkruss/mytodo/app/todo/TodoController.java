@@ -24,7 +24,6 @@ import com.volkruss.mytodo.domain.model.Todo;
 import com.volkruss.mytodo.domain.service.todo.TodoService;
 
 @Controller
-// 全てのパスはtodo以下になる
 @RequestMapping("/todo")
 public class TodoController {
 	
@@ -35,7 +34,6 @@ public class TodoController {
 	public String list(Model model) {
 		Collection<Todo> todos = todoService.findAll();
 
-		// フラッシュメッセージを取得する
 		String resultMessage = (String) model.getAttribute("result");
 		if(Objects.nonNull(resultMessage)) {
 			model.addAttribute("result",resultMessage);
@@ -51,14 +49,19 @@ public class TodoController {
 		if(bindingResult.hasErrors()) {
 			return list(model);
 		}
+		
+		if(!todoService.vaild()) {
+			attributes.addFlashAttribute("result","max件数超えてます");
+			return "redirect:/todo/list";
+		}
+	
 		ModelMapper mapper = new ModelMapper();
 		Todo todo = mapper.map(todoForm, Todo.class);
 		
 		todoService.create(todo);
 		
-		//resultというkeyでフラッシュメッセージを設定する
 		attributes.addFlashAttribute("result","Created successfully!");
-		//リダイレクトする
+
 		return "redirect:/todo/list";
 	}
 	
@@ -71,9 +74,8 @@ public class TodoController {
 		}
 		todoService.finish(form.getTodoId());
 		
-		//resultというkeyでフラッシュメッセージを設定する
 		attributes.addFlashAttribute("result","Finished  successfully!");
-		//リダイレクトする
+
 		return "redirect:/todo/list";
 	}
 	
@@ -90,11 +92,9 @@ public class TodoController {
 		
 		todoService.delete(form.getTodoId());
 		
-		//resultというkeyでフラッシュメッセージを設定する
 		attributes.addFlashAttribute("result","Deleted   successfully!");
-		//リダイレクトする
+
 		return "redirect:/todo/list";	
 	}
-	
 	
 }

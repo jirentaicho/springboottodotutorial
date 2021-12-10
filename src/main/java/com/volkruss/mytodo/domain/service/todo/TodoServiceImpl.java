@@ -30,13 +30,7 @@ public class TodoServiceImpl implements TodoService {
 
 	@Override
 	public Todo create(Todo todo) {
-		long unfinishedCount = todoRepositroy.count();
-		if(unfinishedCount >= MAX_UNFINISHED_COUNT) {
-			// TODO
-			System.out.println("エラー");
-		}
-		
-		// 一意性のある値を生成する
+
 		String todoId = UUID.randomUUID().toString();
 		Date createdAt = new Date();
 		todo.setTodoId(todoId);
@@ -45,8 +39,7 @@ public class TodoServiceImpl implements TodoService {
 		
 		todoRepositroy.save(todo);
 		
-		return todo;
-		
+		return todo;	
 	}
 
 	@Override
@@ -61,6 +54,15 @@ public class TodoServiceImpl implements TodoService {
 	public void delete(String todoId) {
 		Todo todo = findOne(todoId);
 		todoRepositroy.delete(todo);
+	}
+	
+	@Override
+	public boolean vaild() {
+		long unfinishedCount = todoRepositroy.countByFinished(false);
+		if(unfinishedCount >= MAX_UNFINISHED_COUNT) {
+			return false;
+		}
+		return true;		
 	}
 
 	private Todo findOne(String taskId) {

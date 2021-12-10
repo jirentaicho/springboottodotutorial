@@ -11,8 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TodoForm implements Serializable{
-	
-	// 入力チェックのグループ化をするためにインターフェースを作成する。
+
 	public static interface TodoCreate{
 		
 	};
