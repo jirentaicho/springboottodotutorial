@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <title>タスク一覧</title>
+    </head>
+    <body>
+        <div id="wrapper">
+        	<div>
+        		<th:block th:text="${result}"></th:block>
+        		<form th:object="${todoForm}" th:action="@{/todo/create}" th:method="post">
+        			 <input type="text" name ="todoTitle">
+        			 <button>送信</button>
+        		</form>
+        	</div>
+        	<h1>タスクリスト</h1>
+        	<ul th:each="todo : ${todos}">
+        		<li th:text="${todo.todoTitle}"></li>
+				<!-- 完了した場合は完了を付ける -->
+					<th:block th:if="${todo.finished == true}">
+					    <span>完了</span><!-- 表示される-->
+					</th:block>
+					<!-- 完了ボタンはinput hiddenで要素をつける -->
+					<form th:object="${todoForm}" th:action="@{/todo/finish}" th:method="post">
+						<input type="hidden" name="todoId" th:value="${todo.todoId}">
+						<button>FINISH</button>
+					</form>
+					<!-- 削除ボタン　-->
+					<form th:object="${todoForm}" th:action="@{/todo/delete}" th:method="post">
+						<input type="hidden" name="todoId" th:value="${todo.todoId}">
+						<button>DELETE</button>
+					</form>	
+        	</ul>
+    	</div>
+    </body>
+</html>
